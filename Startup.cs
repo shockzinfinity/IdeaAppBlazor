@@ -10,6 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using IdeaAppBlazor.Data;
+using IdeaAppBlazor.Models;
 
 namespace IdeaAppBlazor
 {
@@ -30,6 +31,7 @@ namespace IdeaAppBlazor
             services.AddServerSideBlazor();
             services.AddSingleton<WeatherForecastService>();
             services.AddDbContext<ApplicationDbContext>();
+            services.AddTransient<IIdeaRepository, IdeaRepository>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
