@@ -29,23 +29,33 @@ else
     </table>
 }
 
+<input type="button" value="글쓰기" @onclick="btnCreate_Click" class="btn btn-primary" />
+
 @if (_isShow)
 {
-    <div class="modal fade shadow" tabindex="-1" role="dialog" style="display: block;" id="myModal">
+    <div class="modal fade show" tabindex="-1" role="dialog" style="display: block;" id="myModal">
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title">Modal title</h5>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="document.getElementById('myModal').style.display='none'">
+                    @*<button type="button" class="close" data-dismiss="modal" aria-label="Close" onclick="document.getElementById('myModal').style.display='none'">*@
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="@(() => { _isShow = false; })">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p>Modal body text goes here.</p>
+
+                    <form>
+                        <div class="form-group">
+                            <label for="ideaNote">아이디어</label>
+                            <input type="text" id="ideaNote" class="form-control" @bind="@idea.Note">
+                        </div>
+                    </form>
+
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-primary">Save changes</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" @onclick="btnSave_Click">Save changes</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="@(() => { _isShow = false; })">Close</button>
                 </div>
             </div>
         </div>
@@ -53,12 +63,31 @@ else
 }
 
 @code {
-    private bool _isShow = true;
-    private List<Idea> ideas;
+Idea idea = new Idea();
+private bool _isShow = false;
+private List<Idea> ideas;
 
-    protected override async Task OnInitializedAsync()
-    {
-        await Task.Delay(3000);
-        ideas = await repository.GetAll();
-    }
+protected override async Task OnInitializedAsync()
+{
+    @*await Task.Delay(3000);*@
+    ideas = await repository.GetAll();
+}
+
+private void btnCreate_Click()
+{
+    _isShow = true;
+}
+
+private void btnClose_Click()
+{
+    _isShow = false;
+}
+
+private async Task btnSave_Click()
+{
+    await repository.AddIdea(idea);
+    _isShow = false;
+    ideas = await repository.GetAll();
+    idea = new Idea();
+}
 }
